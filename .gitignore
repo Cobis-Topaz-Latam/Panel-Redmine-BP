@@ -1,0 +1,4 @@
+*.pyc
+.env
+panelredminevenv/
+__pycache__/
