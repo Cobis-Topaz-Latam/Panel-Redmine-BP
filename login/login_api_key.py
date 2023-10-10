@@ -5,6 +5,7 @@ import tkinter as tk
 import pyperclip as clipboard
 import config as const
 from redminelib.exceptions import AuthError, ServerError, ResourceNotFoundError
+import panel.panel_small.panel_small as pl_redmine
 
 def login_ventana():
     root = tk.Tk()
@@ -16,7 +17,7 @@ def login_ventana():
     wtotal = root.winfo_screenwidth()
     htotal = root.winfo_screenheight()
     #  Guardamos el largo y alto de la ventana
-    wventana = 450
+    wventana = 375
     hventana = 180
     #  Aplicamos la siguiente formula para calcular donde debería posicionarse
     pwidth = round(wtotal/2-wventana/2)
@@ -63,29 +64,27 @@ def login_ventana():
         text="Pegar",
         compound=LEFT,
         command=paste_clipboard)
-    btn_paste.pack(side=LEFT, padx=70, ipadx=20)
-
-    img_login = Image.open('./static/icon/login-icon.png')
-    img_login = img_login.resize((30,30), Image.Resampling.LANCZOS)
-
-    img_login_validate = ImageTk.PhotoImage(img_login)
+    btn_paste.pack(side=LEFT, padx=50, ipadx=20)
 
     def redmine_login():
         try:
             # Intenta crear una instancia de Redmine
             #print(var_api_key.get())
-            redmine = Rm(const.REDMINE_URL, key=var_api_key.get())
+            const.REDMINE_KEY=var_api_key.get()
+            redmine = Rm(const.REDMINE_URL, key=const.REDMINE_KEY)
 
             # Si llegamos aquí, la conexión se ha establecido exitosamente
             print("Conexión exitosa a Redmine")
 
-            # Ahora puedes realizar acciones en la instancia de Redmine
-            # Por ejemplo, obtener información de proyectos
-            proyectos = redmine.project.all()
+            # Obtener información sobre el usuario actual (el usuario autenticado)
+            usr_actual = redmine.user.get('current')
+    
+            # Imprimir el nombre del usuario
+            nombre_usuario = usr_actual.firstname + ' ' + usr_actual.lastname
+            print('Nombre del usuario:', nombre_usuario)
 
-            # Iterar a través de los proyectos y mostrar sus nombres
-            for proyecto in proyectos:
-                print(proyecto.name)
+            root.destroy()
+            pl_redmine.panel_redmine()
         except AuthError:
             print("Error de autenticación. Verifica tu clave de acceso a la API.")
         except ServerError:
@@ -94,6 +93,11 @@ def login_ventana():
             print("No se pudo encontrar el recurso en Redmine.")
         except Exception as e:
             print(f"Ocurrió un error inesperado: {str(e)}")
+
+    img_login = Image.open('./static/icon/login-icon.png')
+    img_login = img_login.resize((30,30), Image.Resampling.LANCZOS)
+
+    img_login_validate = ImageTk.PhotoImage(img_login)
 
     # Button para ingresar
     btn_login = tk.Button(

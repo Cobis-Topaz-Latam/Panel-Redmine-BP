@@ -1,2 +1,7 @@
 REDMINE_URL = 'https://servicedesk.cobiscorp.com'
 REDMINE_KEY = ''
+REDMINE_USR_NAME = ''
+
+REDMINE_ISSUE_IMPORTANT = ''
+REDMINE_ISSUE_CAUTION = ''
+REDMINE_ISSUE_ASSIGNED = ''
